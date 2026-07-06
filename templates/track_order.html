@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="card shadow-lg border-0 p-5" style="background:#ffffff;border-radius:20px; color:white;">
+
+        <h2 class="text-center text-primary fw-bold mb-5">
+            🚚 Live Order Tracking
+        </h2>
+
+        <div class="row">
+
+            <!-- LEFT SIDE -->
+
+            <div class="col-md-4">
+
+                <h2 class="text-white fw-bold mb-4">
+                    Order #{{ order.id }}
+                </h2>
+
+                <table class="table table-borderless text-white fs-5">
+
+                    <tr>
+                        <td width="45%">
+                            👤 <strong>Customer</strong>
+                        </td>
+                        <td>: {{ order.customer }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            🍔 <strong>Food</strong>
+                        </td>
+                        <td>: {{ order.food }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            📦 <strong>Quantity</strong>
+                        </td>
+                        <td>: {{ order.quantity }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            💰 <strong>Total</strong>
+                        </td>
+                        <td class="text-warning fw-bold">
+                            : ₹{{ order.total }}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            💳 <strong>Payment</strong>
+                        </td>
+                        <td>: {{ order.payment }}</td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+            <!-- RIGHT SIDE -->
+
+            <div class="col-lg-7">
+
+                <div class="position-relative">
+
+                    <!-- Vertical Line -->
+
+                    <div style="
+                        position:absolute;
+                        left:38px;
+                        top:20px;
+                        width:4px;
+                        height:330px;
+                        background:#d9d9d9;
+                        color: white;
+                        z-index:0;">
+                    </div>
+
+                    <!-- Pending -->
+
+                    <div class="d-flex align-items-center mb-5">
+
+                        <div class="rounded-circle bg-warning shadow" style="width:75px;height:75px;
+                            display:flex;
+                            justify-content:center;
+                            align-items:center;
+                            z-index:2;">
+
+                            <img src="{{ url_for('static', filename='images/bike.png') }}" width="42">
+
+                        </div>
+
+                        <div class="ms-4">
+
+                            <h5 class="mb-1">Order Received</h5>
+
+                            <small class="white">
+                                Your order has been placed successfully.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Preparing -->
+
+                    <div class="d-flex align-items-center mb-5">
+
+                        <div class="rounded-circle
+                        {% if order.status in ['Preparing','Out for Delivery','Delivered'] %}
+                        bg-info
+                        {% else %}
+                        bg-light
+                        {% endif %}
+                        shadow" style="width:75px;height:75px;
+                        display:flex;
+                        justify-content:center;
+                        align-items:center;
+                        z-index:2;">
+
+                            <img src="{{ url_for('static', filename='images/chef.png') }}" width="42">
+
+                        </div>
+
+                        <div class="ms-4">
+
+                            <h5>Preparing Food</h5>
+
+                            <small class="white">
+                                Our chef is preparing your food.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Delivery -->
+
+                    <div class="d-flex align-items-center mb-5">
+
+                        <div class="rounded-circle
+                        {% if order.status in ['Out for Delivery','Delivered'] %}
+                        bg-primary
+                        {% else %}
+                        bg-light
+                        {% endif %}
+                        shadow" style="width:75px;height:75px;
+                        display:flex;
+                        justify-content:center;
+                        align-items:center;
+                        z-index:2;">
+
+                            <img src="{{ url_for('static', filename='images/delivery.png') }}" width="42">
+
+                        </div>
+
+                        <div class="ms-4">
+
+                            <h5>Out for Delivery</h5>
+
+                            <small class="white">
+                                Delivery partner is on the way.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Delivered -->
+
+                    <div class="d-flex align-items-center">
+
+                        <div class="rounded-circle
+                        {% if order.status=='Delivered' %}
+                        bg-success
+                        {% else %}
+                        bg-light
+                        {% endif %}
+                        shadow" style="width:75px;height:75px;
+                        display:flex;
+                        justify-content:center;
+                        align-items:center;
+                        z-index:2;">
+
+                            <img src="{{ url_for('static', filename='images/success.png') }}" width="42">
+
+                        </div>
+
+                        <div class="ms-4">
+
+                            <h5>Delivered</h5>
+
+                            <small class="white">
+                                Enjoy your meal.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <hr class="my-5">
+
+        <div class="text-center">
+
+            <h4 class="mb-4">
+
+                Current Status
+
+                {% if order.status=="Pending" %}
+                <span class="badge bg-warning text-dark ms-2">
+                    Pending
+                </span>
+
+                {% elif order.status=="Preparing" %}
+                <span class="badge bg-info ms-2">
+                    Preparing
+                </span>
+
+                {% elif order.status=="Out for Delivery" %}
+                <span class="badge bg-primary ms-2">
+                    Out for Delivery
+                </span>
+
+                {% elif order.status=="Delivered" %}
+                <span class="badge bg-success ms-2">
+                    Delivered
+                </span>
+
+                {% else %}
+                <span class="badge bg-danger ms-2">
+                    Cancelled
+                </span>
+
+                {% endif %}
+
+            </h4>
+
+        </div>
+
+        <div class="text-center mt-4">
+
+            <a href="/orders" class="btn btn-primary btn-lg px-5">
+                Back to Orders
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Heading -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-white">
+            📦 Order Management Dashboard
+        </h2>
+
+        <a href="/export_excel" class="btn btn-success">
+            📥 Export Excel
+        </a>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-2">
+            <div class="card shadow border-0 text-center bg-primary text-white">
+                <div class="card-body">
+                    <h6>Total Orders</h6>
+                    <h3>{{ total_orders }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card shadow border-0 text-center bg-warning">
+                <div class="card-body">
+                    <h6>Pending</h6>
+                    <h3>{{ pending_orders }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card shadow border-0 text-center bg-info text-white">
+                <div class="card-body">
+                    <h6>Preparing</h6>
+                    <h3>{{ preparing_orders }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card shadow border-0 text-center bg-secondary text-white">
+                <div class="card-body">
+                    <h6>Out</h6>
+                    <h3>{{ out_orders }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card shadow border-0 text-center bg-success text-white">
+                <div class="card-body">
+                    <h6>Delivered</h6>
+                    <h3>{{ delivered_orders }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card shadow border-0 text-center bg-dark text-white">
+                <div class="card-body">
+                    <h6>Revenue</h6>
+                    <h3>₹{{ total_revenue }}</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Search -->
+    <form method="GET" action="/orders" class="mb-4">
+
+        <div class="input-group">
+
+            <input type="text" class="form-control" name="search" placeholder="Search Customer..."
+                value="{{ request.args.get('search','') }}">
+
+            <button class="btn btn-primary">
+                🔍 Search
+            </button>
+
+            <a href="/orders" class="btn btn-secondary">
+                Reset
+            </a>
+
+        </div>
+
+    </form>
+
+    <!-- Table -->
+
+    <div class="card shadow-lg">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-bordered align-middle text-center mb-0">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Food</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th width="260">Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for order in orders %}
+
+                    <tr>
+
+                        <td>{{ order.id }}</td>
+
+                        <td class="fw-bold">
+                            {{ order.customer }}
+                        </td>
+
+                        <td>
+                            {{ order.phone }}
+                        </td>
+
+                        <td>
+                            {{ order.food }}
+                        </td>
+
+                        <td>
+                            {{ order.quantity }}
+                        </td>
+
+                        <td class="fw-bold text-success">
+                            ₹{{ order.total }}
+                        </td>
+
+                        <td>
+                            {{ order.payment }}
+                        </td>
+
+                        <td>
+                            {{ order.order_date.strftime("%d-%b-%Y %I:%M %p") }}
+                        </td>
+
+                        <td>
+
+                            {% if order.status=="Pending" %}
+
+                            <span class="badge bg-warning text-dark px-3 py-2">
+                                🟠 Pending
+                            </span>
+
+                            {% elif order.status=="Preparing" %}
+
+                            <span class="badge bg-info px-3 py-2">
+                                👨‍🍳 Preparing
+                            </span>
+
+                            {% elif order.status=="Out for Delivery" %}
+
+                            <span class="badge bg-primary px-3 py-2">
+                                🚚 Out
+                            </span>
+
+                            {% elif order.status=="Delivered" %}
+
+                            <span class="badge bg-success px-3 py-2">
+                                ✅ Delivered
+                            </span>
+
+                            {% else %}
+
+                            <span class="badge bg-danger px-3 py-2">
+                                ❌ Cancelled
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <div class="btn-group">
+
+                                <a href="/update_status/{{ order.id }}/Preparing" class="btn btn-warning btn-sm">
+                                    👨‍🍳
+                                </a>
+
+                                <a href="/update_status/{{ order.id }}/Out for Delivery" class="btn btn-primary btn-sm">
+                                    🚚
+                                </a>
+
+                                <a href="/update_status/{{ order.id }}/Delivered" class="btn btn-success btn-sm">
+                                    ✅
+                                </a>
+
+                                <a href="/update_status/{{ order.id }}/Cancelled" class="btn btn-danger btn-sm">
+                                    ❌
+                                </a>
+                                <a href="/track_order/{{ order.id }}" class="btn btn-dark btn-sm">
+                                    📍 Track
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

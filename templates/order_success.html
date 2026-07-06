@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="card p-5 text-center">
+
+        <h1 class="text-success">
+            🎉 Order Placed Successfully!
+        </h1>
+
+        <h3 class="mt-3">
+            Thank you, {{ name }}
+        </h3>
+
+        <p class="mt-3">
+            Payment Method:
+            <strong>{{ payment }}</strong>
+        </p>
+
+        <a href="/menu" class="btn btn-warning mt-4">
+            🍔 Order More Food
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

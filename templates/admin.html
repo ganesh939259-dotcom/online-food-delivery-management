@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #1f1c2c, #928dab);
+    }
+
+    .admin-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .dashboard-card {
+        border: none;
+        border-radius: 20px;
+        color: white;
+        text-align: center;
+        padding: 25px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, .3);
+    }
+
+    .food-card {
+        background: #0d6efd;
+    }
+
+    .user-card {
+        background: #198754;
+    }
+
+    .table img {
+        border-radius: 10px;
+        object-fit: cover;
+    }
+
+    .table thead {
+        background: #212529;
+        color: white;
+    }
+
+    .btn-success {
+        font-weight: bold;
+    }
+
+    .btn-danger {
+        font-weight: bold;
+    }
+
+    h1 {
+        font-weight: bold;
+        text-shadow: 2px 2px 10px black;
+    }
+</style>
+
+<div class="container py-5">
+
+    <h1 class="text-center text-white mb-5">
+        👨‍🍳 Food Ordering Admin Panel
+    </h1>
+
+    <!-- Dashboard -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-6">
+
+            <div class="dashboard-card food-card">
+
+                <h5>Total Foods</h5>
+
+                <h1>{{ total_foods }}</h1>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="dashboard-card user-card">
+
+                <h5>Total Users</h5>
+
+                <h1>{{ total_users }}</h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <!-- Add Food -->
+
+        <div class="col-lg-4">
+
+            <div class="admin-card p-4">
+
+                <h3 class="text-center text-primary mb-4">
+                    ➕ Add Food
+                </h3>
+
+                <form method="POST" enctype="multipart/form-data">
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-bold">
+                            Food Name
+                        </label>
+
+                        <input type="text" name="name" class="form-control" placeholder="Burger" required>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-bold">
+                            Price
+                        </label>
+
+                        <input type="number" name="price" class="form-control" placeholder="199" required>
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-bold">
+                            Choose Image
+                        </label>
+
+                        <input type="file" name="image" class="form-control" accept="image/*" required>
+
+                    </div>
+
+                    <button class="btn btn-success w-100">
+
+                        Add Food
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- Food Table -->
+
+        <div class="col-lg-8">
+
+            <div class="admin-card p-4">
+
+                <h3 class="text-center text-danger mb-4">
+                    🍔 Food Items
+                </h3>
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover text-center align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for food in foods %}
+
+                            <tr>
+
+                                <td>{{ food.id }}</td>
+
+                                <td>
+
+                                    <img src="{{ url_for('static', filename='images/' + food.image) }}" width="80"
+                                        height="60">
+
+                                </td>
+
+                                <td class="fw-bold">
+
+                                    {{ food.name }}
+
+                                </td>
+
+                                <td class="text-success fw-bold">
+
+                                    ₹{{ food.price }}
+
+                                </td>
+
+                                <td>
+
+                                    <a href="/delete_food/{{ food.id }}" class="btn btn-danger btn-sm">
+
+                                        🗑 Delete
+
+                                    </a>
+
+                                </td>
+                                <div class="text-end mb-3">
+
+                                    <a href="/orders" class="btn btn-primary">
+
+                                        📦 View Orders
+
+                                    </a>
+
+                                </div>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

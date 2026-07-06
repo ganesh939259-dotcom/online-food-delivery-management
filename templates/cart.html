@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h2 class="text-center text-white mb-4">
+        🛒 My Cart
+    </h2>
+
+    <div class="card p-4">
+
+        <table class="table table-bordered table-hover text-center align-middle">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>Image</th>
+                    <th>Food</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in cart %}
+
+                <tr>
+
+                    <td>
+                        <img src="{{ url_for('static', filename='images/' + item.image) }}" width="80" height="70"
+                            style="object-fit:cover; border-radius:10px;">
+                    </td>
+
+                    <td>
+                        <strong>{{ item.name }}</strong>
+                    </td>
+
+                    <td>
+                        ₹{{ item.price }}
+                    </td>
+
+                    <td>
+
+                        <a href="/decrease_quantity/{{ item.id }}" class="btn btn-danger btn-sm">-</a>
+
+                        <span class="mx-3 fw-bold">
+                            {{ item.quantity }}
+                        </span>
+
+                        <a href="/increase_quantity/{{ item.id }}" class="btn btn-success btn-sm">+</a>
+
+                    </td>
+
+                    <td>
+                        ₹{{ item.price * item.quantity }}
+                    </td>
+
+                    <td>
+
+                        <a href="/remove_from_cart/{{ loop.index0 }}" class="btn btn-outline-danger btn-sm">
+                            🗑 Remove
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                <td>
+                    ₹{{ item.price * item.quantity }}
+                </td>
+
+                <td>
+
+                    <a href="/remove_from_cart/{{ loop.index0 }}" class="btn btn-outline-danger btn-sm">
+                        🗑 Remove
+                    </a>
+
+                </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+
+            <h3 class="text-warning">
+                Total: ₹{{ total }}
+            </h3>
+
+            <a href="/checkout" class="btn btn-success btn-lg">
+                Checkout
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

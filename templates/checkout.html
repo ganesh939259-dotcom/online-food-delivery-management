@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7">
+
+            <div class="card shadow-lg p-4">
+
+                <h2 class="text-center text-white mb-4">
+                    💳 Checkout
+                </h2>
+
+                <form action="/place_order" method="POST">
+
+                    <!-- Full Name -->
+                    <div class="mb-3">
+                        <label class="form-label text-white">
+                            Full Name
+                        </label>
+
+                        <input type="text" class="form-control" name="name" placeholder="Enter Your Name" required>
+                    </div>
+
+                    <!-- Mobile Number -->
+                    <div class="mb-3">
+                        <label class="form-label text-white">
+                            Mobile Number
+                        </label>
+
+                        <input type="text" class="form-control" name="phone" placeholder="Enter Mobile Number"
+                            maxlength="10" required>
+                    </div>
+
+                    <!-- Delivery Address -->
+                    <div class="mb-3">
+                        <label class="form-label text-white">
+                            Delivery Address
+                        </label>
+
+                        <textarea class="form-control" name="address" rows="4" placeholder="Enter Delivery Address"
+                            required></textarea>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="mb-3">
+                        <label class="form-label text-white">
+                            Payment Method
+                        </label>
+
+                        <select class="form-select" name="payment">
+
+                            <option value="Cash on Delivery">
+                                Cash on Delivery
+                            </option>
+
+                            <option value="UPI">
+                                UPI
+                            </option>
+
+                            <option value="Credit Card">
+                                Credit Card
+                            </option>
+
+                            <option value="Debit Card">
+                                Debit Card
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-success w-100 btn-lg">
+                        ✅ Place Order
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
