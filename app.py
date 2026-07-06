@@ -20,7 +20,7 @@ app.secret_key = "food_order_secret_key"
 app.config["UPLOAD_FOLDER"] = "static/images"
 
 # Database Configuration
-app.config.from_object(Config)
+app.config.from_object(Config) 
 
 # Initialize Database
 db.init_app(app)
