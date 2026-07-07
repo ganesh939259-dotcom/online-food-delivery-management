@@ -1,37 +1,17 @@
 pipeline {
-
     agent any
-
-    tools {
-        sonarRunner 'SonarScanner'
-    }
 
     stages {
 
         stage('Clone') {
             steps {
-                git branch: 'master',
-                    url: 'https://github.com/ganesh939259-dotcom/online-food-delivery-management.git'
+                git 'https://github.com/ganesh939259-dotcom/online-food-delivery-management.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh '''
-                python3 -m venv venv
-                . venv/bin/activate
-                pip install --upgrade pip
-                pip install -r requirements.txt
-                '''
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh '''
-                . venv/bin/activate
-                pytest
-                '''
+                sh 'pip3 install -r requirements.txt'
             }
         }
 
@@ -39,8 +19,10 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh '''
-                    . venv/bin/activate
-                    sonar-scanner
+                    sonar-scanner \
+                    -Dsonar.projectKey=online-food-delivery-management \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=http://13.127.3.51:9000
                     '''
                 }
             }
@@ -52,13 +34,5 @@ pipeline {
             }
         }
 
-        stage('Run Docker') {
-            steps {
-                sh '''
-                docker rm -f food-order-container || true
-                docker run -d --name food-order-container -p 5000:5000 food-order
-                '''
-            }
-        }
     }
 }
