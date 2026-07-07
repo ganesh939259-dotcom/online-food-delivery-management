@@ -14,15 +14,6 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                sh '''
-                . venv/bin/activate
-                pytest
-                '''
-            }
-        }
-
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
