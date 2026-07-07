@@ -2,44 +2,63 @@ pipeline {
 
     agent any
 
+    tools {
+        sonarQube 'SonarScanner'
+    }
+
     stages {
 
         stage('Clone') {
             steps {
-                git 'https://github.com/ganesh939259-dotcom/online-food-delivery-management.git'
+                git branch: 'master',
+                    url: 'https://github.com/ganesh939259-dotcom/online-food-delivery-management.git'
             }
         }
 
-        stage('Install') {
+        stage('Install Dependencies') {
             steps {
-                bat 'pip install -r requirements.txt'
+                sh '''
+                python3 -m venv venv
+                . venv/bin/activate
+                pip install --upgrade pip
+                pip install -r requirements.txt
+                '''
             }
         }
 
         stage('Test') {
             steps {
-                bat 'pytest'
+                sh '''
+                . venv/bin/activate
+                pytest
+                '''
             }
         }
 
-        stage('SonarQube') {
+        stage('SonarQube Analysis') {
             steps {
-                bat 'sonar-scanner'
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                    . venv/bin/activate
+                    sonar-scanner
+                    '''
+                }
             }
         }
 
         stage('Docker Build') {
             steps {
-                bat 'docker build -t food-order .'
+                sh 'docker build -t food-order .'
             }
         }
 
         stage('Run Docker') {
             steps {
-                bat 'docker run -d -p 5000:5000 food-order'
+                sh '''
+                docker rm -f food-order-container || true
+                docker run -d --name food-order-container -p 5000:5000 food-order
+                '''
             }
         }
-
     }
-
 }
