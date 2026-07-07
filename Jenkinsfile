@@ -3,15 +3,23 @@ pipeline {
 
     stages {
 
-        stage('Clone') {
+        stage('Install Dependencies') {
             steps {
-                git 'https://github.com/ganesh939259-dotcom/online-food-delivery-management.git'
+                sh '''
+                python3 -m venv venv
+                . venv/bin/activate
+                pip install --upgrade pip
+                pip install -r requirements.txt
+                '''
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Test') {
             steps {
-                sh 'pip3 install -r requirements.txt'
+                sh '''
+                . venv/bin/activate
+                pytest
+                '''
             }
         }
 
@@ -19,6 +27,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh '''
+                    . venv/bin/activate
                     sonar-scanner \
                     -Dsonar.projectKey=online-food-delivery-management \
                     -Dsonar.sources=. \
@@ -30,9 +39,28 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t food-order .'
+                sh '''
+                docker build -t food-order .
+                '''
             }
         }
 
+        stage('Run Docker Container') {
+            steps {
+                sh '''
+                docker rm -f food-order-container || true
+                docker run -d --name food-order-container -p 5000:5000 food-order
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
     }
 }
