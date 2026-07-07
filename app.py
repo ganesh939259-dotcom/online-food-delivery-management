@@ -32,10 +32,8 @@ ACCOUNT_SID = os.getenv("ACCOUNT_SID")
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
 TWILIO_NUMBER = os.getenv("TWILIO_NUMBER")
 
-client = Client(
-    ACCOUNT_SID,
-    AUTH_TOKEN
-)
+client = Client(ACCOUNT_SID, AUTH_TOKEN)
+
 # ---------------- HOME ----------------
 
 @app.route("/")
