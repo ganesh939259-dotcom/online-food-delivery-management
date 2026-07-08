@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    environment {
+        ACCOUNT_SID   = credentials('twilio-account-sid')
+        AUTH_TOKEN    = credentials('twilio-auth-token')
+        TWILIO_NUMBER = credentials('twilio-number')
+    }
+    stages {
+        stage('Build Images') {
+            steps {
+                sh 'docker compose build'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh '''
+                docker compose down
+                docker compose up -d
+                '''
+            }
+        }
+        stage('Smoke Test') {
+            steps {
+                sh '''
+                sleep 10
+                curl -f http://localhost:5000 || (docker compose logs web && exit 1)
+                '''
+            }
+        }
+    }
+    post {
+        success { echo 'Deployed successfully at http://13.127.3.51:5000' }
+        failure { sh 'docker compose logs --tail=50 || true' }
+    }
+}
