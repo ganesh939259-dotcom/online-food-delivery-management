@@ -1,5 +1,12 @@
 pipeline {
     agent any
+
+    environment {
+        ACCOUNT_SID   = credentials('twilio-account-sid')
+        AUTH_TOKEN    = credentials('twilio-auth-token')
+        TWILIO_NUMBER = credentials('twilio-number')
+    }
+
     stages {
         stage('Install Dependencies') {
             steps {
@@ -11,6 +18,7 @@ pipeline {
                 '''
             }
         }
+
         stage('Test') {
             steps {
                 sh '''
@@ -19,6 +27,7 @@ pipeline {
                 '''
             }
         }
+
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
@@ -32,28 +41,39 @@ pipeline {
                 }
             }
         }
-        stage('Docker Build') {
+
+        stage('Build Images') {
+            steps {
+                sh 'docker compose build'
+            }
+        }
+
+        stage('Deploy') {
             steps {
                 sh '''
-                docker build -t food-order .
+                docker compose down
+                docker compose up -d
                 '''
             }
         }
-        stage('Run Docker Container') {
+
+        stage('Smoke Test') {
             steps {
                 sh '''
-                docker rm -f food-order-container || true
-                docker run -d --name food-order-container -p 5000:5000 food-order
+                sleep 10
+                curl -f http://localhost:5000 || (docker compose logs web && exit 1)
                 '''
             }
         }
     }
+
     post {
         success {
-            echo 'Pipeline executed successfully!'
+            echo 'Pipeline executed successfully! App deployed at http://13.127.3.51:5000'
         }
         failure {
             echo 'Pipeline failed.'
+            sh 'docker compose logs --tail=50 || true'
         }
     }
 }
