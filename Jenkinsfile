@@ -1,8 +1,6 @@
 pipeline {
     agent any
-
     stages {
-
         stage('Install Dependencies') {
             steps {
                 sh '''
@@ -13,13 +11,20 @@ pipeline {
                 '''
             }
         }
-
+        stage('Test') {
+            steps {
+                sh '''
+                . venv/bin/activate
+                pytest
+                '''
+            }
+        }
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh '''
                     . venv/bin/activate
-                    sonar-scanner \
+                    /opt/sonar-scanner/bin/sonar-scanner \
                     -Dsonar.projectKey=online-food-delivery-management \
                     -Dsonar.sources=. \
                     -Dsonar.host.url=http://13.127.3.51:9000
@@ -27,7 +32,6 @@ pipeline {
                 }
             }
         }
-
         stage('Docker Build') {
             steps {
                 sh '''
@@ -35,7 +39,6 @@ pipeline {
                 '''
             }
         }
-
         stage('Run Docker Container') {
             steps {
                 sh '''
@@ -45,7 +48,6 @@ pipeline {
             }
         }
     }
-
     post {
         success {
             echo 'Pipeline executed successfully!'
