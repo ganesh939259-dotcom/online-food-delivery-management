@@ -1,11 +1,8 @@
-version: "3.8"
-
 services:
   web:
     build: .
-    container_name: food-app
-    expose:
-      - "5000"
+    ports:
+      - "5000:5000"
     environment:
       MYSQL_HOST: mysql
       MYSQL_USER: root
@@ -20,7 +17,6 @@ services:
 
   mysql:
     image: mysql:8
-    container_name: food-mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: food_order_db
@@ -30,7 +26,6 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: food-nginx
     ports:
       - "80:80"
     volumes:
