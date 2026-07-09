@@ -4,8 +4,8 @@ services:
   web:
     build: .
     container_name: food-app
-    ports:
-      - "5000:5000"
+    expose:
+      - "5000"
     environment:
       MYSQL_HOST: mysql
       MYSQL_USER: root
@@ -26,6 +26,17 @@ services:
       MYSQL_DATABASE: food_order_db
     volumes:
       - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    container_name: food-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - web
     restart: unless-stopped
 
 volumes:
