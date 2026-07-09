@@ -1,27 +1,32 @@
+version: "3.8"
+
 services:
   web:
     build: .
+    container_name: food-app
     ports:
       - "5000:5000"
     environment:
-      - MYSQL_HOST=mysql
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=root
-      - MYSQL_DATABASE=food_order_db
-      - ACCOUNT_SID
-      - AUTH_TOKEN
-      - TWILIO_NUMBER
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: food_order_db
+      ACCOUNT_SID: ${ACCOUNT_SID}
+      AUTH_TOKEN: ${AUTH_TOKEN}
+      TWILIO_NUMBER: ${TWILIO_NUMBER}
     depends_on:
       - mysql
-    restart: on-failure
+    restart: unless-stopped
 
   mysql:
     image: mysql:8
+    container_name: food-mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: food_order_db
     volumes:
       - mysql_data:/var/lib/mysql
+    restart: unless-stopped
 
 volumes:
   mysql_data:
